@@ -28,3 +28,33 @@ export const newUser = TryCatch(
     });
   }
 );
+
+export const getAllUsers = TryCatch(async (req, res, next) => {
+  const users = await User.find();
+  return res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+export const getUserById = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    next(new ErrorHandler("User not found", 404));
+  }
+  return res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+export const deleteUser = TryCatch(async (req, res, next) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) {
+    next(new ErrorHandler("User not found", 404));
+  }
+  return res.status(200).json({
+    success: true,
+    message: "User deleted successfully",
+  });
+});
