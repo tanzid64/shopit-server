@@ -20,3 +20,28 @@ export type controllerType = (
   res: Response,
   next: NextFunction
 ) => Promise<void | Response<any, Record<string, any>>>;
+
+export type searchReqQuery = {
+  search?: string;
+  price?: string;
+  category?: string;
+  sort?: string;
+  page?: string;
+};
+
+export interface baseQuery {
+  name?: {
+    $regex: string;
+    $options: string;
+  };
+  price?: {
+    $lte: number;
+  };
+  category?: string;
+}
+
+export type invalidateCacheProps = {
+  product?: boolean;
+  order?: boolean;
+  admin?: boolean;
+};
