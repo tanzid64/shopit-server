@@ -24,7 +24,7 @@ export const newOrder = TryCatch(async (req, res, next) => {
     });
     // reduce stock
     reduceStock(orderItems);
-    invalidatesCache({ product: true, admin: true });
+    invalidatesCache({ product: true, admin: true, userId: user });
     return res.status(201).json({
         success: true,
         message: "Order placed successfully",
@@ -95,7 +95,12 @@ export const processOrder = TryCatch(async (req, res, next) => {
             return next(new ErrorHandler("Invalid order status", 400));
     }
     await order.save();
-    invalidatesCache({ product: false, order: true, admin: true });
+    invalidatesCache({
+        product: false,
+        order: true,
+        admin: true,
+        userId: order.user,
+    });
     return res.status(200).json({
         success: true,
         message: "Order processed successfully",
@@ -108,7 +113,12 @@ export const deleteOrder = TryCatch(async (req, res, next) => {
         return next(new ErrorHandler("Order not found", 404));
     }
     await order.deleteOne();
-    invalidatesCache({ product: false, order: true, admin: true });
+    invalidatesCache({
+        product: false,
+        order: true,
+        admin: true,
+        userId: order.user,
+    });
     return res.status(200).json({
         success: true,
         message: "Order deleted successfully",
