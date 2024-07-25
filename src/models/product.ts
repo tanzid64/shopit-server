@@ -17,6 +17,7 @@ const schema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, "Product category is required"],
+      trim: true,
     },
     photo: {
       type: String,
@@ -31,3 +32,5 @@ const schema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+export const Product = mongoose.model("Product", schema)
