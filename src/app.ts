@@ -4,6 +4,7 @@ import { connectDB } from "./utils/config.js";
 import { errorMiddleware } from "./middlewares/error.js";
 // Importing Routes
 import userRoute from "./routes/user.js";
+import productRoute from "./routes/products.js";
 
 
 configDotenv();
@@ -16,6 +17,9 @@ app.use(express.json());
 
 // using routes
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/product", productRoute);
+
+
 //! Error handling middleware
 app.use(errorMiddleware);
 app.listen(port, () => {
