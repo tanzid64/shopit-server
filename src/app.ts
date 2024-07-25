@@ -3,6 +3,7 @@ import { configDotenv } from "dotenv";
 import { connectDB } from "./utils/config.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
+import morgan from "morgan";
 // Importing Routes
 import userRoute from "./routes/user.js";
 import productRoute from "./routes/products.js";
@@ -10,6 +11,7 @@ import orderRoute from "./routes/order.js";
 
 configDotenv();
 const app = express();
+app.use(morgan("dev"));
 const port = 3000;
 connectDB();
 
