@@ -118,6 +118,7 @@ export const processOrder = TryCatch(async (req, res, next) => {
     order: true,
     admin: true,
     userId: order.user,
+    orderId: order._id.toString(),
   });
   return res.status(200).json({
     success: true,
@@ -137,6 +138,7 @@ export const deleteOrder = TryCatch(async (req, res, next) => {
     order: true,
     admin: true,
     userId: order.user,
+    orderId: order._id.toString(),
   });
   return res.status(200).json({
     success: true,

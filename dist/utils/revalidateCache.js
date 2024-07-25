@@ -1,7 +1,6 @@
 import { nodeCache } from "../app.js";
-import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
-export const invalidatesCache = async ({ product, order, admin, userId, }) => {
+export const invalidatesCache = async ({ product, order, admin, userId, orderId }) => {
     if (product) {
         const productKeys = [
             "latestProducts",
@@ -17,12 +16,7 @@ export const invalidatesCache = async ({ product, order, admin, userId, }) => {
         productKeys.forEach((key) => nodeCache.del(key));
     }
     if (order) {
-        const orderKeys = ["allOrders", `myOrders-${userId}`];
-        const orders = await Order.find().select("_id");
-        orders.forEach((order) => {
-            const id = order._id.toString();
-            orderKeys.push(`order-${id}`);
-        });
+        const orderKeys = ["allOrders", `myOrders-${userId}`, `order-${orderId}`];
         orderKeys.forEach((key) => nodeCache.del(key));
     }
     if (admin) {
