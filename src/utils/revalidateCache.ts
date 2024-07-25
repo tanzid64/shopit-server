@@ -1,6 +1,4 @@
 import { nodeCache } from "../app.js";
-import { Order } from "../models/order.js";
-import { Product } from "../models/product.js";
 import { invalidateCacheProps } from "../types/types.js";
 
 export const invalidatesCache = async ({
@@ -8,7 +6,8 @@ export const invalidatesCache = async ({
   order,
   admin,
   userId,
-  orderId
+  orderId,
+  productId,
 }: invalidateCacheProps) => {
   if (product) {
     const productKeys: string[] = [
@@ -16,18 +15,19 @@ export const invalidatesCache = async ({
       "adminProducts",
       "categories",
     ];
-    // product-{id}
-    const productsId = await Product.find().select("_id");
-    productsId.forEach((product) => {
-      const id = product._id.toString();
-      productKeys.push(`product-${id}`);
-    });
-    productKeys.forEach((key) => nodeCache.del(key));
+    if (typeof productId === "string") productKeys.push(`product-${productId}`);
+    if (typeof productId === "object")
+      productKeys.forEach((i) => `product-${i}`);
+    nodeCache.del(productKeys);
   }
 
   if (order) {
-    const orderKeys: string[] = ["allOrders", `myOrders-${userId}`, `order-${orderId}`];
-    orderKeys.forEach((key) => nodeCache.del(key));
+    const orderKeys: string[] = [
+      "allOrders",
+      `myOrders-${userId}`,
+      `order-${orderId}`,
+    ];
+    nodeCache.del(orderKeys);
   }
   if (admin) {
   }
