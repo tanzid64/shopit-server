@@ -2,7 +2,7 @@ import { Product } from "../models/product.js";
 export const calculatePercentage = (currentMonth, lastMonth) => {
     if (lastMonth === 0)
         return currentMonth * 100;
-    const percent = ((currentMonth - lastMonth) / lastMonth) * 100;
+    const percent = (currentMonth / lastMonth) * 100;
     return Number(percent.toFixed(0));
 };
 export const getInventories = async ({ categories, productsCount, }) => {
