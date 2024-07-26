@@ -34,21 +34,24 @@ export const getInventories = async ({
 
 interface MyDocument extends Document {
   createdAt: Date;
+  discount?: number;
+  total?: number;
 }
 
 type funcProps = {
   length: number;
   docArr: MyDocument[];
+  property?: "discount" | "total";
 };
 
-export const getChartData = ({ length, docArr }: funcProps) => {
+export const getChartData = ({ length, docArr, property }: funcProps) => {
   const data = new Array(length).fill(0);
   const today = new Date();
   docArr.forEach((i) => {
     const creationDate = i.createdAt;
     const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
     if (monthDiff < length) {
-      data[length - monthDiff - 1] += 1;
+      data[length - monthDiff - 1] += property ? i[property]! : 1;
     }
   });
   return data;
