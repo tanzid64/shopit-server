@@ -43,5 +43,13 @@ app.use("/uploads", express.static("uploads"));
 //! Error handling middleware
 app.use(errorMiddleware);
 app.listen(port, () => {
-  console.log(`Server is working on http://localhost:${port}`);
+  if (process.env.NODE_ENV === "Production") {
+    {
+      console.log(
+        `Server is working on https://shopit-server-hbch.onrender.com/`
+      );
+    }
+  } else {
+    console.log(`Server is working on http://localhost:${port}`);
+  }
 });
