@@ -6,8 +6,9 @@ import { User } from "../models/user.js";
 import { calculatePercentage, getChartData, getInventories, } from "../utils/statsHelper.js";
 export const getDashboardStats = TryCatch(async (req, res, next) => {
     let stats;
-    if (nodeCache.has("adminStats"))
-        stats = JSON.parse(nodeCache.get("adminStats"));
+    const key = "adminStats";
+    if (nodeCache.has(key))
+        stats = JSON.parse(nodeCache.get(key));
     else {
         // Last date of current month
         const today = new Date();
@@ -155,7 +156,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
             userRatio,
             latestTransaction: modifiedLatestTransaction,
         };
-        nodeCache.set("adminStats", JSON.stringify(stats));
+        nodeCache.set(key, JSON.stringify(stats));
     }
     return res.status(200).json({
         success: true,

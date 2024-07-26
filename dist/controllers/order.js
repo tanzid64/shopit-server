@@ -24,7 +24,12 @@ export const newOrder = TryCatch(async (req, res, next) => {
     });
     // reduce stock
     reduceStock(orderItems);
-    invalidatesCache({ product: true, admin: true, userId: user, productId: orderItems.map((i) => i.productId.toString()) });
+    invalidatesCache({
+        product: true,
+        admin: true,
+        userId: user,
+        productId: orderItems.map((i) => i.productId.toString()),
+    });
     return res.status(201).json({
         success: true,
         message: "Order placed successfully",

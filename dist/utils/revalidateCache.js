@@ -1,5 +1,5 @@
 import { nodeCache } from "../app.js";
-export const invalidatesCache = async ({ product, order, admin, userId, orderId, productId, }) => {
+export const invalidatesCache = ({ product, order, admin, userId, orderId, productId, }) => {
     if (product) {
         const productKeys = [
             "latestProducts",
@@ -21,5 +21,11 @@ export const invalidatesCache = async ({ product, order, admin, userId, orderId,
         nodeCache.del(orderKeys);
     }
     if (admin) {
+        nodeCache.del([
+            "adminStats",
+            "adminPieCharts",
+            "adminBarCharts",
+            "adminLineCharts",
+        ]);
     }
 };

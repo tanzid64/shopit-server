@@ -1,7 +1,7 @@
 import { nodeCache } from "../app.js";
 import { invalidateCacheProps } from "../types/types.js";
 
-export const invalidatesCache = async ({
+export const invalidatesCache = ({
   product,
   order,
   admin,
@@ -30,5 +30,11 @@ export const invalidatesCache = async ({
     nodeCache.del(orderKeys);
   }
   if (admin) {
+    nodeCache.del([
+      "adminStats",
+      "adminPieCharts",
+      "adminBarCharts",
+      "adminLineCharts",
+    ]);
   }
 };

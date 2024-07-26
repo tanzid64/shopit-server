@@ -11,8 +11,9 @@ import {
 
 export const getDashboardStats = TryCatch(async (req, res, next) => {
   let stats;
-  if (nodeCache.has("adminStats"))
-    stats = JSON.parse(nodeCache.get("adminStats") as string);
+  const key = "adminStats"
+  if (nodeCache.has(key))
+    stats = JSON.parse(nodeCache.get(key) as string);
   else {
     // Last date of current month
     const today = new Date();
@@ -198,7 +199,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       userRatio,
       latestTransaction: modifiedLatestTransaction,
     };
-    nodeCache.set("adminStats", JSON.stringify(stats));
+    nodeCache.set(key, JSON.stringify(stats));
   }
 
   return res.status(200).json({
