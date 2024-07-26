@@ -27,6 +27,9 @@ export const nodeCache = new NodeCache();
 // using middleware
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Site Working");
+});
 // using routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/products", productRoute);
