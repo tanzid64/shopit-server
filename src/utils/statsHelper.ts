@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { Product } from "../models/product.js";
 
 export const calculatePercentage = (
@@ -29,4 +30,26 @@ export const getInventories = async ({
     });
   });
   return categoryCount;
+};
+
+interface MyDocument extends Document {
+  createdAt: Date;
+}
+
+type funcProps = {
+  length: number;
+  docArr: MyDocument[];
+};
+
+export const getChartData = ({ length, docArr }: funcProps) => {
+  const data = new Array(length).fill(0);
+  const today = new Date();
+  docArr.forEach((i) => {
+    const creationDate = i.createdAt;
+    const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
+    if (monthDiff < length) {
+      data[length - monthDiff - 1] += 1;
+    }
+  });
+  return data;
 };
