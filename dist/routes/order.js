@@ -14,4 +14,3 @@ app
     .put(adminOnly, processOrder)
     .delete(adminOnly, deleteOrder);
 export default app;
-//# sourceMappingURL=order.js.map

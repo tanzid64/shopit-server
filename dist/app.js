@@ -1,5 +1,5 @@
 import express from "express";
-import { configDotenv } from "dotenv";
+import { config } from "dotenv";
 import { connectDB } from "./utils/config.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
@@ -11,11 +11,13 @@ import productRoute from "./routes/products.js";
 import orderRoute from "./routes/order.js";
 import paymentRoute from "./routes/payment.js";
 import dashboardRoutes from "./routes/stats.js";
-configDotenv();
+config({
+    path: "./.env",
+});
 const app = express();
 app.use(morgan("dev"));
 const port = 3000;
-connectDB();
+connectDB(process.env.MONGO_URI || "");
 // using stripe
 const stripeKey = process.env.STRIPE_KEY || "";
 export const stripe = new Stripe(stripeKey);
@@ -38,4 +40,3 @@ app.use(errorMiddleware);
 app.listen(port, () => {
     console.log(`Server is working on http://localhost:${port}`);
 });
-//# sourceMappingURL=app.js.map

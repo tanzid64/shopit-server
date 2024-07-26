@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-export const connectDB = async () => {
+export const connectDB = async (uri: string) => {
   try {
-    const conn = await mongoose.connect("mongodb://localhost:27017/", {
+    const conn = await mongoose.connect(uri, {
       dbName: "shopit",
     });
 

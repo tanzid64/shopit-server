@@ -7,4 +7,3 @@ class ErrorHandler extends Error {
     }
 }
 export default ErrorHandler;
-//# sourceMappingURL=errorHandler.js.map

@@ -22,4 +22,3 @@ app
     .put(adminOnly, singleUpload, updateProduct)
     .delete(adminOnly, deleteProduct);
 export default app;
-//# sourceMappingURL=products.js.map

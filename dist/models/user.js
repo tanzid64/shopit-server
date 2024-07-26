@@ -45,4 +45,3 @@ schema.virtual("age").get(function () {
     return age;
 });
 export const User = model("User", schema);
-//# sourceMappingURL=user.js.map

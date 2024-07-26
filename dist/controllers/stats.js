@@ -1,19 +1,10 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { nodeCache } from "../app.js";
 import { TryCatch } from "../middlewares/error.js";
 import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
 import { calculatePercentage, getChartData, getInventories, } from "../utils/statsHelper.js";
-export const getDashboardStats = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+export const getDashboardStats = TryCatch(async (req, res, next) => {
     let stats;
     const key = "adminStats";
     if (nodeCache.has(key))
@@ -89,7 +80,7 @@ export const getDashboardStats = TryCatch((req, res, next) => __awaiter(void 0, 
             .select(["orderItems", "discount", "total", "status"])
             .limit(4);
         // Call all promises together
-        const [currentMonthProducts, lastMonthProducts, currentMonthUsers, lastMonthUsers, currentMonthOrders, lastMonthOrders, productsCount, usersCount, allOrders, lastSixMonthsOrders, categories, maleUsersCount, latestTransaction,] = yield Promise.all([
+        const [currentMonthProducts, lastMonthProducts, currentMonthUsers, lastMonthUsers, currentMonthOrders, lastMonthOrders, productsCount, usersCount, allOrders, lastSixMonthsOrders, categories, maleUsersCount, latestTransaction,] = await Promise.all([
             currentMonthProductsPromise,
             lastMonthProductsPromise,
             currentMonthUsersPromise,
@@ -134,7 +125,7 @@ export const getDashboardStats = TryCatch((req, res, next) => __awaiter(void 0, 
             property: "total",
         });
         // inventory
-        const categoryCount = yield getInventories({
+        const categoryCount = await getInventories({
             categories,
             productsCount,
         });
@@ -171,8 +162,8 @@ export const getDashboardStats = TryCatch((req, res, next) => __awaiter(void 0, 
         success: true,
         stats,
     });
-}));
-export const getPieCharts = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+export const getPieCharts = TryCatch(async (req, res, next) => {
     let charts;
     if (nodeCache.has("adminPieCharts"))
         charts = JSON.parse(nodeCache.get("adminPieCharts"));
@@ -184,7 +175,7 @@ export const getPieCharts = TryCatch((req, res, next) => __awaiter(void 0, void 
             "tax",
             "shippingCharges",
         ]);
-        const [processingOrder, shippedOrder, deliveredOrder, categories, productsCount, productOutOfStock, allOrders, allUsers, adminUsersCount, customerUsersCount,] = yield Promise.all([
+        const [processingOrder, shippedOrder, deliveredOrder, categories, productsCount, productOutOfStock, allOrders, allUsers, adminUsersCount, customerUsersCount,] = await Promise.all([
             Order.countDocuments({ status: "processing" }),
             Order.countDocuments({ status: "out for delivery" }),
             Order.countDocuments({ status: "delivered" }),
@@ -202,7 +193,7 @@ export const getPieCharts = TryCatch((req, res, next) => __awaiter(void 0, void 
             delivered: deliveredOrder,
         };
         // Product categories Ratio
-        const producCategories = yield getInventories({
+        const producCategories = await getInventories({
             categories,
             productsCount,
         });
@@ -249,8 +240,8 @@ export const getPieCharts = TryCatch((req, res, next) => __awaiter(void 0, void 
         success: true,
         charts,
     });
-}));
-export const getBarCharts = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+export const getBarCharts = TryCatch(async (req, res, next) => {
     const key = "adminBarCharts";
     let charts;
     if (nodeCache.has(key))
@@ -276,7 +267,7 @@ export const getBarCharts = TryCatch((req, res, next) => __awaiter(void 0, void 
         const lastSixMonthUsersPromise = User.find({
             createdAt: { $gte: sixMonthsAgo, $lte: today },
         }).select("createdAt");
-        const [lastSixMonthProducts, lastTwelveMonthOrders, lastSixMonthUsers] = yield Promise.all([
+        const [lastSixMonthProducts, lastTwelveMonthOrders, lastSixMonthUsers] = await Promise.all([
             lastSixMonthProductsPromise,
             lastTwelveMonthOrdersPromise,
             lastSixMonthUsersPromise,
@@ -304,8 +295,8 @@ export const getBarCharts = TryCatch((req, res, next) => __awaiter(void 0, void 
         success: true,
         charts,
     });
-}));
-export const getLineCharts = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+export const getLineCharts = TryCatch(async (req, res, next) => {
     const key = "adminLineCharts";
     let charts;
     if (nodeCache.has(key))
@@ -319,7 +310,7 @@ export const getLineCharts = TryCatch((req, res, next) => __awaiter(void 0, void
         const baseQuery = {
             createdAt: { $gte: twelveMonthsAgo, $lte: today },
         };
-        const [lastTwelveMonthProducts, lastTwelveMonthOrders, lastTwelveMonthUsers,] = yield Promise.all([
+        const [lastTwelveMonthProducts, lastTwelveMonthOrders, lastTwelveMonthUsers,] = await Promise.all([
             Product.find(baseQuery).select("createdAt"),
             Order.find(baseQuery).select(["createdAt", "discount", "total"]),
             User.find(baseQuery).select("createdAt"),
@@ -354,5 +345,4 @@ export const getLineCharts = TryCatch((req, res, next) => __awaiter(void 0, void
         success: true,
         charts,
     });
-}));
-//# sourceMappingURL=stats.js.map
+});

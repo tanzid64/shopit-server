@@ -8,4 +8,3 @@ const storage = multer.diskStorage({
     },
 });
 export const singleUpload = multer({ storage }).single("photo");
-//# sourceMappingURL=multer.js.map

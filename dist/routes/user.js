@@ -11,4 +11,3 @@ app.get("/:id", getUserById);
 // DELETE /api/v1/user/:id
 app.delete("/:id", adminOnly, deleteUser);
 export default app;
-//# sourceMappingURL=user.js.map

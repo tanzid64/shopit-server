@@ -13,4 +13,3 @@ app.get("/coupon/all", adminOnly, allCoupons);
 // DELETE /api/v1/payments/coupon/:id
 app.delete("/coupon/:id", adminOnly, deleteCoupon);
 export default app;
-//# sourceMappingURL=payment.js.map
