@@ -1,26 +1,35 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { TryCatch } from "../middlewares/error.js";
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { rm } from "fs";
 import { nodeCache } from "../app.js";
 import { invalidatesCache } from "../utils/revalidateCache.js";
-export const createProduct = TryCatch(async (req, res, next) => {
+export const createProduct = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, price, stock, category } = req.body;
     const photo = req.file;
     if (!photo)
         return next(new ErrorHandler("Product photo is required", 400));
     if (!name || !price || !stock || !category) {
-        rm(photo?.path, () => {
+        rm(photo === null || photo === void 0 ? void 0 : photo.path, () => {
             console.log("Photo deleted");
         });
         return next(new ErrorHandler("Please provide all fields", 400));
     }
-    await Product.create({
+    yield Product.create({
         name,
         price,
         stock,
         category: category.toLowerCase(),
-        photo: photo?.path,
+        photo: photo === null || photo === void 0 ? void 0 : photo.path,
     });
     // invalidate cache
     invalidatesCache({ product: true, admin: true });
@@ -28,22 +37,22 @@ export const createProduct = TryCatch(async (req, res, next) => {
         success: true,
         message: "Product created successfully",
     });
-});
-export const getLatestProducts = TryCatch(async (req, res, next) => {
+}));
+export const getLatestProducts = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let products;
     if (nodeCache.has("latestProducts")) {
         products = JSON.parse(nodeCache.get("latestProducts"));
     }
     else {
-        products = await Product.find().sort({ createdAt: -1 }).limit(5);
+        products = yield Product.find().sort({ createdAt: -1 }).limit(5);
         nodeCache.set("latestProducts", JSON.stringify(products));
     }
     return res.status(200).json({
         success: true,
         products,
     });
-});
-export const getAllProducts = TryCatch(async (req, res, next) => {
+}));
+export const getAllProducts = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { search, price, category, sort } = req.query;
     const page = Number(req.query.page) || 1;
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
@@ -64,7 +73,7 @@ export const getAllProducts = TryCatch(async (req, res, next) => {
     if (category) {
         baseQuery.category = category;
     }
-    const [products, allProducts] = await Promise.all([
+    const [products, allProducts] = yield Promise.all([
         Product.find(baseQuery)
             .sort(sort ? { price: sort === "asc" ? 1 : -1 } : undefined)
             .limit(limit)
@@ -77,43 +86,43 @@ export const getAllProducts = TryCatch(async (req, res, next) => {
         totalPage,
         products,
     });
-});
-export const getAllCategories = TryCatch(async (req, res, next) => {
+}));
+export const getAllCategories = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let categories;
     if (nodeCache.has("categories")) {
         categories = JSON.parse(nodeCache.get("categories"));
     }
     else {
-        categories = await Product.distinct("category");
+        categories = yield Product.distinct("category");
         nodeCache.set("categories", JSON.stringify(categories));
     }
     return res.status(200).json({
         success: true,
         categories,
     });
-});
-export const getAdminProducts = TryCatch(async (req, res, next) => {
+}));
+export const getAdminProducts = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let products;
     if (nodeCache.has("adminProducts")) {
         products = JSON.parse(nodeCache.get("adminProducts"));
     }
     else {
-        products = await Product.find();
+        products = yield Product.find();
         nodeCache.set("adminProducts", JSON.stringify(products));
     }
     return res.status(200).json({
         success: true,
         products,
     });
-});
-export const getProductDetails = TryCatch(async (req, res, next) => {
+}));
+export const getProductDetails = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     let product;
     if (nodeCache.has(`product-${id}`)) {
         product = JSON.parse(nodeCache.get(`product-${id}`));
     }
     else {
-        product = await Product.findById(id);
+        product = yield Product.findById(id);
         if (!product) {
             return next(new ErrorHandler("Product not found", 404));
         }
@@ -123,20 +132,20 @@ export const getProductDetails = TryCatch(async (req, res, next) => {
         success: true,
         product,
     });
-});
-export const updateProduct = TryCatch(async (req, res, next) => {
+}));
+export const updateProduct = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { name, price, stock, category } = req.body;
     const photo = req.file;
-    const product = await Product.findById(id);
+    const product = yield Product.findById(id);
     if (!product) {
         return next(new ErrorHandler("Product not found", 404));
     }
     if (photo) {
-        rm(product?.photo, () => {
+        rm(product === null || product === void 0 ? void 0 : product.photo, () => {
             console.log("Old photo deleted");
         });
-        product.photo = photo?.path;
+        product.photo = photo === null || photo === void 0 ? void 0 : photo.path;
     }
     if (name)
         product.name = name;
@@ -146,7 +155,7 @@ export const updateProduct = TryCatch(async (req, res, next) => {
         product.stock = stock;
     if (category)
         product.category = category.toLowerCase();
-    await product.save();
+    yield product.save();
     // invalidate cache
     invalidatesCache({
         product: true,
@@ -157,13 +166,13 @@ export const updateProduct = TryCatch(async (req, res, next) => {
         success: true,
         message: "Product updated successfully",
     });
-});
-export const deleteProduct = TryCatch(async (req, res, next) => {
-    const product = await Product.findByIdAndDelete(req.params.id);
+}));
+export const deleteProduct = TryCatch((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const product = yield Product.findByIdAndDelete(req.params.id);
     if (!product) {
         return next(new ErrorHandler("Product not found", 404));
     }
-    rm(product?.photo, () => {
+    rm(product === null || product === void 0 ? void 0 : product.photo, () => {
         console.log("Photo deleted");
     });
     // invalidate cache
@@ -176,4 +185,5 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
         success: true,
         message: "Product deleted successfully",
     });
-});
+}));
+//# sourceMappingURL=product.js.map

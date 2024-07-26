@@ -23,6 +23,9 @@ export const stripe = new Stripe(stripeKey);
 export const nodeCache = new NodeCache();
 // using middleware
 app.use(express.json());
+app.get("/", (req, res) => {
+    res.send("Site Working");
+});
 // using routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/products", productRoute);
@@ -35,3 +38,4 @@ app.use(errorMiddleware);
 app.listen(port, () => {
     console.log(`Server is working on http://localhost:${port}`);
 });
+//# sourceMappingURL=app.js.map

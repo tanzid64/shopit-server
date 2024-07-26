@@ -29,3 +29,4 @@ export const invalidatesCache = ({ product, order, admin, userId, orderId, produ
         ]);
     }
 };
+//# sourceMappingURL=revalidateCache.js.map

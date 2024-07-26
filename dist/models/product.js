@@ -29,3 +29,4 @@ const schema = new mongoose.Schema({
     timestamps: true,
 });
 export const Product = mongoose.model("Product", schema);
+//# sourceMappingURL=product.js.map
