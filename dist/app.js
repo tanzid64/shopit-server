@@ -4,6 +4,7 @@ import { connectDB } from "./utils/config.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import morgan from "morgan";
+import Stripe from "stripe";
 // Importing Routes
 import userRoute from "./routes/user.js";
 import productRoute from "./routes/products.js";
@@ -15,6 +16,9 @@ const app = express();
 app.use(morgan("dev"));
 const port = 3000;
 connectDB();
+// using stripe
+const stripeKey = process.env.STRIPE_KEY || "";
+export const stripe = new Stripe(stripeKey);
 // using cache
 export const nodeCache = new NodeCache();
 // using middleware

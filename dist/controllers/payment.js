@@ -1,6 +1,22 @@
+import { stripe } from "../app.js";
 import { TryCatch } from "../middlewares/error.js";
 import { Coupon } from "../models/coupon.js";
 import ErrorHandler from "../utils/errorHandler.js";
+export const createPaymentIntent = TryCatch(async (req, res, next) => {
+    const { amount } = req.body;
+    if (!amount) {
+        next(new ErrorHandler("Please provide amount", 400));
+    }
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency: "usd",
+        metadata: { integration_check: "accept_a_payment" },
+    });
+    return res.status(201).json({
+        success: true,
+        clientSecret: paymentIntent.client_secret,
+    });
+});
 export const newCoupon = TryCatch(async (req, res, next) => {
     const { coupon, amount } = req.body;
     if (!coupon || !amount) {
